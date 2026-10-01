@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HCI Study Notes</title>
+<style>
+:root{--bg:#fff;--alt:#f4f6fb;--text:#1c1e2b;--muted:#5b5f73;--p:#3f51b5;--line:#dcdfeb;--card:#fff}
+[data-theme=dark]{--bg:#12131a;--alt:#181a24;--text:#eceef7;--muted:#a9adc2;--p:#9fa8ff;--line:#343750;--card:#1d1f2b}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+:focus-visible{outline:3px solid var(--p);outline-offset:2px}
+nav{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:1.2rem;padding:.7rem 1.5rem;flex-wrap:wrap}
+nav b{margin-right:auto;font-size:1.15rem}nav a{color:var(--text);text-decoration:none;padding:.4rem .2rem}nav a:hover{color:var(--p);text-decoration:underline}
+button{font:inherit;cursor:pointer;min-height:44px;padding:0 1rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+.hero{background:linear-gradient(135deg,#3f51b5,#7e57c2);color:#fff;text-align:center;padding:4rem 1.5rem}
+.hero h1{margin:0 0 .5rem;font-size:2.4rem}.hero p{max-width:640px;margin:auto;opacity:.95}
+main{max-width:1000px;margin:auto;padding:0 1.5rem}
+section{padding:3rem 0;scroll-margin-top:70px;border-bottom:1px solid var(--line)}
+h2{font-size:1.7rem;margin:0 0 1rem}.muted{color:var(--muted)}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.card{background:var(--alt);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem}
+.card h3{margin:.2rem 0;font-size:1.05rem}.card p{margin:.3rem 0}
+details summary{cursor:pointer;font-weight:600;padding:.3rem 0}
+.terms span{display:inline-block;background:var(--alt);border:1px solid var(--line);border-radius:20px;padding:.2rem .8rem;margin:.2rem}
+figure{margin:1.5rem 0;background:var(--alt);border:1px solid var(--line);border-radius:12px;padding:1rem}
+figcaption{color:var(--muted);font-size:.9rem;text-align:center}
+svg{width:100%;height:auto}svg text{fill:var(--text);font-size:15px;text-anchor:middle}
+.bx{fill:var(--card);stroke:var(--p);stroke-width:2}.ln{stroke:var(--p);stroke-width:2.5;fill:none}
+footer{text-align:center;color:var(--muted);padding:2rem}
+
+/* ---------- tracking panel (separate, always dark) ---------- */
+#tracker{position:fixed;left:0;right:0;bottom:0;z-index:100;background:#171a28;color:#fff;border-top:3px solid #e53935;font-size:.92rem}
+#tracker{transition:transform .25s ease}#tracker.min{transform:translateY(100%)}
+#panelToggle{position:absolute;right:12px;top:-36px;min-height:32px!important;padding:.2rem .8rem;border-radius:10px 10px 0 0;background:#171a28!important;border:2px solid #e53935!important;border-bottom:0!important;font-size:.85rem}
+#tracker button{background:#2a2e45;color:#fff;border-color:#454a6b;min-height:40px}
+#tracker button[aria-pressed=true]{background:#e53935;border-color:#e53935}
+#tracker .bar{display:flex;gap:.6rem 1rem;align-items:center;flex-wrap:wrap;padding:.6rem 1rem}
+.pill{font-weight:700;letter-spacing:.04em;padding:.3rem .8rem;border-radius:20px;background:#2a2e45;white-space:nowrap}
+.pill i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e53935;margin-right:.4rem;animation:blink 1.2s infinite}
+.pill.off i,.pill.pause i{animation:none;background:#9aa}
+@keyframes blink{50%{opacity:.25}}
+.st{display:flex;gap:1rem;flex-wrap:wrap;margin-right:auto}.st span{color:#b9bdd6}.st b{color:#fff}
+#drawer{max-height:180px;overflow:auto;border-top:1px solid #333958;padding:.4rem 1rem;font-size:.85rem}
+#drawer div{padding:.15rem 0;border-bottom:1px solid #262a40;color:#cfd3ea}#drawer em{color:#8f94b5;font-style:normal;margin-left:.5rem}
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:.6rem 1rem;border-radius:10px;z-index:200;display:none;gap:1rem;align-items:center}
+#toast button{min-height:36px;background:transparent;color:#9fd0ff;border-color:#9fd0ff}
+/* red dots */
+#dots{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:50;overflow:hidden;display:none}
+body.dots #dots{display:block}
+#dots span{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:rgba(229,57,53,.9);border:2px solid #fff;color:#fff;font:700 10px/18px system-ui;text-align:center;box-shadow:0 0 0 0 rgba(229,57,53,.6);animation:pop .6s}
+@keyframes pop{0%{transform:scale(.3)}60%{box-shadow:0 0 0 14px rgba(229,57,53,0)}100%{transform:scale(1)}}
+</style>
+</head>
+<body>
+<nav>
+  <b>🧠 HCI Study Notes</b>
+  <a href="#intro">Introduction</a><a href="#heuristics">Heuristics</a><a href="#diagrams">Diagrams</a><a href="#laws">Laws</a>
+  <button id="themeBtn" title="Dark / light mode (Alt+D)">🌙 Dark</button>
+</nav>
+
+<header class="hero"><h1>Human–Computer Interaction</h1>
+<p>Simple notes and diagrams on how people interact with technology — and how to design interfaces that are easy, efficient and pleasant to use.</p></header>
+
+<main>
+<section id="intro"><h2>1. What is HCI?</h2>
+<p>Human–Computer Interaction (HCI) is the study of how people use computers and how interfaces can be designed to fit human abilities, needs and limits. It combines psychology, design and computer science.</p>
+<p><b>Goals:</b> make systems <i>useful</i>, <i>usable</i> and <i>enjoyable</i>; reduce errors; save time; include all kinds of users.</p>
+<p class="terms"><b>Key terms:</b>
+<span>Usability</span><span>User experience (UX)</span><span>Affordance</span><span>Feedback</span><span>Mental model</span><span>Accessibility</span></p>
+<details><summary>Why does HCI matter?</summary><p class="muted">Poor interfaces cause mistakes, frustration and lost money. Good ones feel invisible — users reach their goal without thinking about the tool.</p></details>
+<details><summary>What is a mental model?</summary><p class="muted">The picture in a user’s head of how a system works. Good design matches the user’s mental model, so behaviour is predictable.</p></details>
+</section>
+
+<section id="heuristics"><h2>2. Nielsen’s 10 Usability Heuristics</h2>
+<p class="muted">Tap “Example” on a card to read more.</p><div class="grid" id="heur"></div></section>
+
+<section id="diagrams"><h2>3. Diagrams</h2>
+<figure><svg viewBox="0 0 700 170" role="img" aria-label="Design process cycle" data-track="Diagram: design process">
+<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3f51b5"/></marker></defs>
+<g data-track="Box: Research"><rect class="bx" x="10" y="30" width="150" height="55" rx="10"/><text x="85" y="63">1. Research</text></g>
+<g data-track="Box: Design"><rect class="bx" x="185" y="30" width="150" height="55" rx="10"/><text x="260" y="63">2. Design</text></g>
+<g data-track="Box: Prototype"><rect class="bx" x="360" y="30" width="150" height="55" rx="10"/><text x="435" y="63">3. Prototype</text></g>
+<g data-track="Box: Evaluate"><rect class="bx" x="535" y="30" width="150" height="55" rx="10"/><text x="610" y="63">4. Evaluate</text></g>
+<path class="ln" d="M160 57H183" marker-end="url(#ar)"/><path class="ln" d="M335 57H358" marker-end="url(#ar)"/><path class="ln" d="M510 57H533" marker-end="url(#ar)"/>
+<path class="ln" d="M610 85V140H85V88" marker-end="url(#ar)"/><text x="350" y="132">Iterate until users succeed</text></svg>
+<figcaption>Fig 1 – The iterative user-centred design process</figcaption></figure>
+
+<figure><svg viewBox="0 0 700 190" role="img" aria-label="Gulfs of execution and evaluation" data-track="Diagram: gulfs">
+<g data-track="Box: User"><rect class="bx" x="20" y="50" width="150" height="90" rx="10"/><text x="95" y="90">User</text><text x="95" y="112">(has a goal)</text></g>
+<g data-track="Box: System"><rect class="bx" x="530" y="50" width="150" height="90" rx="10"/><text x="605" y="90">System</text><text x="605" y="112">(interface)</text></g>
+<path class="ln" d="M175 75H525" marker-end="url(#ar)"/><text x="350" y="62">Gulf of Execution – “How do I do it?”</text>
+<path class="ln" d="M525 120H175" marker-end="url(#ar)"/><text x="350" y="148">Gulf of Evaluation – “What happened?”</text></svg>
+<figcaption>Fig 2 – Norman’s gulfs: good design makes both gaps small</figcaption></figure>
+
+<figure><svg viewBox="0 0 700 150" role="img" aria-label="Fitts's law" data-track="Diagram: Fitts's law">
+<circle cx="70" cy="60" r="14" fill="#3f51b5"/><text x="70" y="100">Start</text>
+<g data-track="Target"><rect x="520" y="25" width="60" height="70" rx="8" fill="#e53935"/><text x="550" y="115">Target</text></g>
+<path class="ln" d="M90 60H515" marker-end="url(#ar)"/><text x="300" y="50">Distance (D)</text>
+<path class="ln" d="M600 25V95M595 25H605M595 95H605"/><text x="640" y="64">Width (W)</text>
+<text x="350" y="142">Time = a + b · log₂(D/W + 1)</text></svg>
+<figcaption>Fig 3 – Fitts’s Law: far, small targets take longer to hit</figcaption></figure>
+</section>
+
+<section id="laws"><h2>4. Other Important Laws &amp; Principles</h2><div class="grid" id="laws2"></div></section>
+</main>
+<footer>HCI course project · Click, scroll and explore — the panel at the bottom shows what is being tracked.</footer>
+
+<div id="dots" aria-hidden="true"></div>
+<div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="undoBtn" hidden>Undo</button></div>
+
+<!-- ============ TRACKING PANEL ============ -->
+<aside id="tracker" aria-label="Interaction tracking panel">
+  <button id="panelToggle" aria-expanded="true" title="Hide / show panel (Alt+H)">▼ Hide</button>
+  <div id="drawer" hidden aria-label="Event log"></div>
+  <div class="bar" id="ctl" hidden>
+    <span class="pill" id="pill" role="status"></span>
+    <div class="st"><span>⏱ <b id="t">00:00</b></span><span>🖱 Clicks <b id="c">0</b></span><span>⌨ Keys <b id="k">0</b></span><span>↕ Scroll <b id="d">0%</b></span><span>🐭 Mouse <b id="m">0</b> px</span></div>
+    <button id="dotBtn" aria-pressed="false" title="Show a red dot where you clicked (Alt+T)">🔴 Show click dots</button>
+    <button id="pauseBtn" title="Pause / resume (Alt+P)"></button>
+    <button id="logBtn" aria-expanded="false">📋 Log</button>
+    <button id="expBtn" title="Download data as JSON">⬇ Export</button>
+    <button id="clrBtn">🗑 Clear</button>
+  </div>
+</aside>
+
+<script>
+const $=s=>document.querySelector(s), esc=t=>String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const fresh=()=>({clicks:0,keys:0,dist:0,depth:0,events:[],dots:[],sec:{}});
+const S=Object.assign({asked:true,on:true,paused:false,start:Date.now(),last:null,snap:null},fresh());
+const act=()=>S.on&&!S.paused;
+
+/* ---------- site content ---------- */
+const H=[["Visibility of system status","Keep users informed about what is going on.","A progress bar while uploading, or the “Tracking ON” badge below."],
+["Match with the real world","Use words and symbols users already know.","A trash-can icon for delete."],
+["User control and freedom","Give a clear way out of mistakes.","Undo after deleting data."],
+["Consistency and standards","Same things should look and work the same way.","A save icon always means “save”."],
+["Error prevention","Stop problems before they happen.","“Are you sure?” before deleting."],
+["Recognition rather than recall","Show options so users don’t have to remember.","Menus, recently used files."],
+["Flexibility and efficiency","Offer shortcuts for experts.","Ctrl+C / Ctrl+V."],
+["Aesthetic and minimalist design","Show only what is relevant.","A clean search page."],
+["Help users recover from errors","Use plain language and suggest a fix.","“Password too short — use 8+ characters.”"],
+["Help and documentation","Make help easy to search and task-focused.","FAQ pages and tooltips."]];
+$('#heur').innerHTML=H.map((h,i)=>`<div class="card"><h3>${i+1}. ${h[0]}</h3><p>${h[1]}</p><details><summary>Example</summary><p class="muted">${h[2]}</p></details></div>`).join('');
+$('#laws2').innerHTML=[["Fitts’s Law","Time to reach a target depends on its distance and size → make important buttons big and close."],
+["Hick’s Law","More choices = slower decisions → keep menus short and grouped."],
+["Miller’s Law","People hold about 7 ± 2 items in short-term memory → chunk information."],
+["Gestalt principles","People group things by proximity, similarity and closure → use spacing and alignment."],
+["Affordance &amp; feedback","Controls should look usable and respond instantly to actions."],
+["Accessibility","Design for everyone: contrast, keyboard use, text size, screen readers."]].map(l=>`<div class="card"><h3>${l[0]}</h3><p>${l[1]}</p></div>`).join('');
+
+/* ---------- tracking ---------- */
+function log(type,target,x,y){S.events.push({time:new Date().toISOString(),type,target,x,y});if(S.events.length>500)S.events.shift();render()}
+document.addEventListener('click',e=>{
+  if(!act()||e.target.closest('#tracker,#toast'))return;
+  const el=e.target.closest('[data-track],a,button,summary,h1,h2,h3,input,label');
+  const t=el?(el.dataset.track||el.textContent.trim().slice(0,30)||el.tagName):'Page background';
+  S.clicks++;const x=Math.round(e.pageX),y=Math.round(e.pageY);
+  S.dots.push({x,y});
+  const d=document.createElement('span');d.style.left=x+'px';d.style.top=y+'px';d.textContent=S.clicks;$('#dots').appendChild(d);
+  log('click',t,x,y);
+},true);
+document.addEventListener('mousemove',e=>{if(act()&&S.last)S.dist+=Math.hypot(e.clientX-S.last.x,e.clientY-S.last.y);S.last={x:e.clientX,y:e.clientY}});
+document.addEventListener('keydown',e=>{
+  if(e.altKey){const f={KeyD:toggleTheme,KeyT:toggleDots,KeyP:togglePause,KeyH:togglePanel}[e.code];if(f){e.preventDefault();f()}return}
+  if(act()){S.keys++;log('key','Keyboard (content not stored)')}
+});
+addEventListener('scroll',()=>{const m=document.documentElement.scrollHeight-innerHeight;if(act()&&m>0)S.depth=Math.max(S.depth,scrollY/m)},{passive:true});
+const vis=new Set(),io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?vis.add(e.target.id):vis.delete(e.target.id)),{threshold:.4});
+document.querySelectorAll('main section').forEach(s=>io.observe(s));
+
+/* ---------- panel ---------- */
+function render(){
+  const el=S.start?Math.floor((Date.now()-S.start)/1000):0;
+  $('#t').textContent=String(el/60|0).padStart(2,'0')+':'+String(el%60).padStart(2,'0');
+  $('#c').textContent=S.clicks;$('#k').textContent=S.keys;$('#d').textContent=Math.round(S.depth*100)+'%';$('#m').textContent=Math.round(S.dist);
+  const p=$('#pill');p.className='pill '+(!S.on?'off':S.paused?'pause':'');
+  p.innerHTML='<i></i>'+(!S.on?'TRACKING OFF':S.paused?'PAUSED':'TRACKING ON');
+  $('#pauseBtn').textContent=!S.on?'▶ Turn on':S.paused?'▶ Resume':'⏸ Pause';
+  $('#ctl').hidden=!S.asked;
+  $('#dots').style.height=document.documentElement.scrollHeight+'px';
+  if(!$('#drawer').hidden)$('#drawer').innerHTML=S.events.slice(-40).reverse().map(e=>`<div><b>${e.type.toUpperCase()}</b> ${esc(e.target)}<em>${e.time.slice(11,19)}${e.x!=null?` (${e.x}, ${e.y})`:''}</em></div>`).join('')||'<div>No events yet — click or type something.</div>';
+  document.body.style.paddingBottom=$('#tracker').classList.contains('min')?'0px':$('#tracker').offsetHeight+'px';
+}
+function toast(m,u){$('#toastMsg').textContent=m;$('#undoBtn').hidden=!u;$('#toast').style.display='flex';clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').style.display='none',5000)}
+function accept(){S.asked=S.on=true;S.paused=false;S.start=S.start||Date.now();render();toast('Tracking started')}
+function togglePause(){if(!S.on)return accept();S.paused=!S.paused;S.last=null;render();toast(S.paused?'Tracking paused':'Tracking resumed')}
+$('#pauseBtn').onclick=togglePause;
+function togglePanel(){const t=$('#tracker'),m=t.classList.toggle('min');$('#panelToggle').textContent=m?'▲ Tracking':'▼ Hide';$('#panelToggle').setAttribute('aria-expanded',!m);render()}
+$('#panelToggle').onclick=togglePanel;
+function toggleDots(){const on=document.body.classList.toggle('dots');$('#dotBtn').setAttribute('aria-pressed',on);$('#dotBtn').textContent=on?'🔴 Hide click dots':'🔴 Show click dots';render()}
+$('#dotBtn').onclick=toggleDots;
+$('#logBtn').onclick=()=>{const d=$('#drawer');d.hidden=!d.hidden;$('#logBtn').setAttribute('aria-expanded',!d.hidden);render()};
+$('#expBtn').onclick=()=>{
+  const data={summary:{sessionSeconds:S.start?Math.floor((Date.now()-S.start)/1000):0,clicks:S.clicks,keyPresses:S.keys,mouseDistancePx:Math.round(S.dist),maxScrollDepthPercent:Math.round(S.depth*100),secondsPerSection:S.sec},events:S.events};
+  const json=JSON.stringify(data,null,2);
+  try{
+    const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+    const a=document.createElement('a');a.href=url;a.download='interaction-data.json';a.style.display='none';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},1500);
+    toast('Downloaded interaction-data.json');
+  }catch(err){
+    /* fallback: open the data in a new tab so it can be saved manually */
+    const w=window.open('','_blank');
+    if(w){w.document.write('<pre>'+esc(json)+'</pre>');w.document.close();toast('Download blocked — data opened in a new tab')}
+    else toast('Export failed — please allow downloads/pop-ups');
+  }};
+$('#clrBtn').onclick=()=>{
+  if(!confirm('Delete all recorded data and red dots?'))return;
+  S.snap=Object.fromEntries(Object.keys(fresh()).map(k=>[k,S[k]]));
+  Object.assign(S,fresh());$('#dots').innerHTML='';render();toast('All data deleted',true)};
+$('#undoBtn').onclick=()=>{if(!S.snap)return;Object.assign(S,S.snap);S.snap=null;
+  $('#dots').innerHTML=S.dots.map((d,i)=>`<span style="left:${d.x}px;top:${d.y}px">${i+1}</span>`).join('');render();toast('Data restored')};
+function toggleTheme(){const d=document.documentElement.dataset.theme==='dark';document.documentElement.dataset.theme=d?'light':'dark';$('#themeBtn').textContent=d?'🌙 Dark':'☀️ Light'}
+$('#themeBtn').onclick=toggleTheme;
+
+setInterval(()=>{if(act())vis.forEach(id=>S.sec[id]=(S.sec[id]||0)+1);render()},1000);
+addEventListener('resize',render);render();
+</script>
+</body>
+</html>
