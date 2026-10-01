@@ -70,6 +70,19 @@ All data stays in the browser. Nothing is sent to any server. If you refresh or 
 
 If the download is blocked by the browser, the data opens in a new tab instead. You can copy or save it from there.
 
+## Code and languages
+
+All the code is inside one file: `index.html`. There are no other code files.
+
+| Part | Language | Where in `index.html` | What it does |
+|---|---|---|---|
+| Page structure and text | HTML | Main part of the file (`<nav>`, `<main>`, `<footer>`, `<aside>`) | Headings, notes, buttons, the tracking panel layout |
+| Diagrams | SVG (written inside HTML) | Inside the Diagrams section | Design process, gulfs and Fitts's law drawings |
+| Look and design | CSS | Inside the `<style>` tag at the top | Colors, layout, cards, dark / light theme, the tracking panel and red dots |
+| Behavior | JavaScript | Inside the `<script>` tag at the bottom | Tracking (clicks, keys, scroll, mouse), live counters, Log, Export, Clear / Undo, Pause, Hide panel, dark mode and keyboard shortcuts |
+
+The heuristics cards are also created by JavaScript from a list in the script.
+
 ## Files
 
 - `index.html` – the whole project (HTML, CSS and JavaScript in one file)
